@@ -95,9 +95,11 @@ let state=load();
 function migrateState(){
   state.version=2;
   state.decks=Array.isArray(state.decks)?state.decks:[];
+  // 删除早期演示用的 PSYC Starter，不影响之后真正建立的卡组。
+  state.decks=state.decks.filter(d=>d.id!=='starter');
   state.decks.forEach(d=>{if(!d.course)d.course='PSYC1002';if(!d.unit)d.unit='Other';});
   SEEDED_DECKS.forEach(seed=>{if(!state.decks.some(d=>d.id===seed.id))state.decks.push(structuredClone(seed));});
-  if(!state.activeDeck || !state.decks.some(d=>d.id===state.activeDeck)) state.activeDeck='psy1002-neuro-l4';
+  if(!state.activeDeck || state.activeDeck==='starter' || !state.decks.some(d=>d.id===state.activeDeck)) state.activeDeck='psy1002-neuro-l4';
 }
 migrateState();
 let mode='home';let session={};
